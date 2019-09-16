@@ -13,6 +13,7 @@ function setButtonActions(){
     }
 }
 
+
 async function processStudentData() {
     try {
         setButtonActions();
@@ -20,8 +21,8 @@ async function processStudentData() {
         const jsonStudentData = await (await fetch("http://petlatkea.dk/2019/hogwartsdata/students.json")).json();
 
         studentData = jsonStudentData ? jsonStudentData : [];
-        showStudentData(studentData);
         divideNameParts();
+        showStudentData(studentData);
 
     } catch(error) {
         studentData = [];
@@ -43,35 +44,60 @@ function showStudentData(studentsArray) {
     })
 }
 
+// Function divide full name into: first, middle and last
 function divideNameParts() {
+    let formattedStudentData = [];
     studentData.forEach((entry) => {
+        let house = entry.house;
         let fullName = entry['fullname'];
+
         if(fullName[0] === ' ') {
             fullName = fullName.slice(1, fullName.length);
         }
         if(fullName[fullName.length - 1] === ' ') {
             fullName = fullName.slice(0, fullName.length - 1);
         }
-        let array = fullName.split(' ');
+        if(house[0] === ' ') {
+            house = house.slice(1, house.length);
+        }
+        if(house[house.length - 1] === ' ') {
+            house = house.slice(0, house.length - 1);
+        }
 
+        let array = fullName.split(' ');
         let firstName = array[0];
         let lastName = (array.length < 2) ? 'NoLastName' : array[array.length - 1];
+        let middleName = '';
 
-        firstName = capitalize(firstName);
-        lastName = capitalize(lastName);
+        let formattedFirstName = capitalize(firstName);
+        let formattedLastName = capitalize(lastName);
+
 
         if(array.length > 2) {
-            const middleName = array.filter( (name) => {
+
+            let middleNameArray = array.filter( (name) => {
                 if(name.includes(lastName)) {
                     return false
                 } else if (name.includes(firstName)) {
                     return false
                 } else return true
+            });
+
+            middleNameArray.forEach(name => {
+                middleName = middleName + capitalize(name) + ' ';
             })
         }
+
+        formattedStudentData.push({
+            fullname: formattedFirstName + ' ' + middleName + formattedLastName,
+            gender: entry.gender,
+            house: capitalize(house),
+        })
     });
+    studentData = [...formattedStudentData]; // Using the spread operator to create a new array in studentData
 }
 
+// Capitalize strings function
 function capitalize(str) {
     if(str) {
         return str[0]
@@ -80,7 +106,7 @@ function capitalize(str) {
     }
 }
 
-
+// Sort by function
 function sortBy(typeOfSorting) {
     switch(typeOfSorting) {
         case 'First Name': {
@@ -128,3 +154,4 @@ function deleteChilds(parentElement) {
         child = parentElement.lastElementChild;
     }
 }
+

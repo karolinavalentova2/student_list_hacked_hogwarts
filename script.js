@@ -9,6 +9,15 @@ function setButtonActions(){
         document.getElementById('modal').style.display = 'none';
     };
 
+    const filterByButtons = document.getElementById('filterButtons');
+
+    for(let i = 0; i< filterByButtons.children.length; i++) {
+        const currentButton = filterByButtons.children[i];
+        currentButton.onclick = () => {
+            filterBy(currentButton.textContent);
+        }
+    }
+
     for(let i = 0; i < sortByButtons.children.length; i++) {
         const currentButton = sortByButtons.children[i];
         currentButton.onclick = () => {
@@ -23,7 +32,7 @@ function showStudentModalAction () {
     for(let i = 0; i < modal.children.length; i++) {
         const currentModal = modal.children[i];
         currentModal.onclick = () => {
-            showStudentModal(currentModal.textContent);
+            showStudentModal(currentModal);
         }
     }
 }
@@ -52,8 +61,10 @@ function showStudentData(studentsArray) {
     studentsArray.forEach((studentEntry) => {
         let temporaryStudentEntryTemplate = studentListEntryTemplate.content.cloneNode(true);
 
-        temporaryStudentEntryTemplate.childNodes[1].childNodes[1].textContent = studentEntry['fullname'];
-        temporaryStudentEntryTemplate.childNodes[1].childNodes[3].textContent = studentEntry['house'];
+        temporaryStudentEntryTemplate.childNodes[1].childNodes[1].textContent = studentEntry.fullname.firstName + studentEntry.fullname.middleName + studentEntry.fullname.lastName;
+        temporaryStudentEntryTemplate.childNodes[1].childNodes[3].textContent = studentEntry.house;
+
+        temporaryStudentEntryTemplate.childNodes[1].children[2].src = studentEntry.picture;
 
         studentListElement.appendChild(temporaryStudentEntryTemplate);
     })
@@ -111,8 +122,11 @@ function divideNameParts() {
             },
             gender: entry.gender,
             house: capitalize(house),
+            picture: makePictureName(formattedFirstName, formattedLastName),
         })
     });
+
+    studentData = [...formattedStudentData];
 }
 
 // Capitalize strings function
@@ -127,11 +141,11 @@ function capitalize(str) {
 // Sort by function
 function sortBy(typeOfSorting) {
     switch(typeOfSorting) {
-        case 'First Name': {
+        case 'First name': {
             // Sort by first name; source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
             let sortedArray = studentData.sort((a,b) => {
-                if (a['fullname'] < b['fullname']) return -1;
-                if (a['fullname'] > b['fullname']) return 1;
+                if (a.fullname.firstName < b.fullname.firstName) return -1;
+                if (a.fullname.firstName > b.fullname.firstName) return 1;
                 return 0;
             });
             deleteChilds(document.getElementById('studentList'));
@@ -140,8 +154,8 @@ function sortBy(typeOfSorting) {
         }
         case 'Last name': {
             let sortedArray = studentData.sort((a,b) => {
-                if (a['fullname'] > b['fullname']) return -1;
-                if (a['fullname'] < b['fullname']) return 1;
+                if (a.fullname.lastName < b.fullname.lastName) return -1;
+                if (a.fullname.lastName > b.fullname.lastName) return 1;
                 return 0;
             });
             deleteChilds(document.getElementById('studentList'));
@@ -162,7 +176,7 @@ function sortBy(typeOfSorting) {
             return;
         }
     }
-};
+}
 
 // Delete child
 function deleteChilds(parentElement) {
@@ -173,12 +187,29 @@ function deleteChilds(parentElement) {
     }
 }
 
+function filterBy(houseName) {
+    if(houseName === 'Show all') {
+        deleteChilds(document.getElementById('studentList'));
+        showStudentData(studentData);
+        return;
+    }
+    let filteredArray;
+
+    filteredArray = studentData.filter(student => {
+        return student['house'] === houseName;
+    });
+
+    deleteChilds(document.getElementById('studentList'));
+    showStudentData(filteredArray);
+}
+
 // Display modal function
 function showStudentModal(studentDataElement) {
-    const clickedStudentName = studentDataElement[0].textContent;
-    const clickedStudentHouse = studentDataElement[1].textContent;
+    const clickedStudentName = studentDataElement.children[0].textContent;
+    const clickedStudentHouse = studentDataElement.children[1].textContent;
     const modal = document.getElementById('modal');
     const houseBanner = document.getElementById('houseBanner');
+    const picture = document.getElementById('studentPicture');
 
     let modalColor;
     let houseBannerSource;
@@ -204,6 +235,12 @@ function showStudentModal(studentDataElement) {
     }
 
     houseBanner.src = houseBannerSource;
+    picture.src = studentDataElement.children[2].src;
     modal.children[0].style.border = modalColor;
     modal.style.display = 'block';
+}
+
+
+function makePictureName(firstName, lastName) {
+    return './student_pictures/' + lastName.toLowerCase() + '_' + firstName[0].toLowerCase() + '.png'
 }

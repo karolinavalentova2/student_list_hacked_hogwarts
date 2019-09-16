@@ -45,10 +45,21 @@ function showStudentData(studentsArray) {
 
 function divideNameParts() {
     studentData.forEach((entry) => {
-        const fullName = entry['fullname'];
+        let fullName = entry['fullname'];
+        if(fullName[0] === ' ') {
+            fullName = fullName.slice(1, fullName.length);
+        }
+        if(fullName[fullName.length - 1] === ' ') {
+            fullName = fullName.slice(0, fullName.length - 1);
+        }
         let array = fullName.split(' ');
-        const lastName = (array.length < 2) ? 'NoLastName' : array[array.length - 1];
-        const firstName = array[0];
+
+        let firstName = array[0];
+        let lastName = (array.length < 2) ? 'NoLastName' : array[array.length - 1];
+
+        firstName = capitalize(firstName);
+        lastName = capitalize(lastName);
+
         if(array.length > 2) {
             const middleName = array.filter( (name) => {
                 if(name.includes(lastName)) {
@@ -59,6 +70,14 @@ function divideNameParts() {
             })
         }
     });
+}
+
+function capitalize(str) {
+    if(str) {
+        return str[0]
+            .toUpperCase() + str.slice(1)
+            .toLowerCase()
+    }
 }
 
 

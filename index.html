@@ -3,8 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Student list</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js"></script>
 </head>
 <body>
 
+<div class="dropDown">
+    <button class="sortByButton">Sort by</button>
+    <div style="list-style: none;" class="dropDown-content" id="sortByButtons">
+        <div>First name</div>
+        <div>Last name</div>
+        <div>House</div>
+    </div>
+</div>
+<div class="dropDown">
+    <button class="sortByButton">Filter</button>
+    <div style="list-style: none;" class="dropDown-content" id="filterButtons">
+        <div>Gryffindor</div>
+        <div>Ravenclaw</div>
+        <div>Hufflepuff</div>
+        <div>Slytherin</div>
+        <div onclick="processStudentData().then()">Show all</div>
+    </div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modalContent" id="modalContent">
+        <span class="close">&times;</span>
+        <img alt="house banner" src="test.png" id="houseBanner">
+        <h2 id="modalStudentName"></h2>
+        <h2 id="modalStudentHouse"></h2>
+    </div>
+</div>
+
+<div id="studentList">
+    <!-- The student data goes here -->
+</div>
+
 </body>
+
+<template id="studentEntry">
+    <ul style="list-style-type: none">
+        <li></li>
+        <li></li>
+    </ul>
+</template>
 </html>

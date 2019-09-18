@@ -5,24 +5,6 @@
     <title>Student list</title>
     <link rel="stylesheet" href="./style.css">
     <script src="./script.js"></script>
-    <script>
-        window.onload = start;
-        function start(){
-            let coll = document.getElementsByClassName("collapsible");
-
-            for (let i = 0; i < coll.length; i++) {
-                coll[i].addEventListener("click", function() {
-                    this.classList.toggle("active");
-                    let content = this.nextElementSibling;
-                    if (content.style.display === "block") {
-                        content.style.display = "none";
-                    } else {
-                        content.style.display = "block";
-                    }
-                });
-            }
-        }
-    </script>
 </head>
 <body>
 <div class="grid-container">
@@ -52,16 +34,38 @@
     </aside>
     <table>
         <tr>
-            <th><span class="add-border">Full name</span></th>
+            <th><span class="add-border">First name</span></th>
+            <th><span class="add-border">Last name</span></th>
             <th><span class="add-border">Gender</span></th>
             <th><span class="add-border">House</span></th>
             <th><span class="add-border">Blood</span></th>
             <th><span class="add-border">Inquisitorial squad</span></th>
-            <th><button class="sortByButton"><span class="add-border">Sort by</span></button></th>
-            <th><button class="filterByButton"><span class="add-border">Filter</span></button></th>
+            <th>
+                <div class="dropDown">
+                    <button class="sortByButton"><span class="add-border">Sort by</span></button>
+                    <div class="dropDown-content" id="sortByButtons">
+                        <div>First name</div>
+                        <div>Last name</div>
+                        <div>House</div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="dropDown">
+                    <button class="filterByButton"><span class="add-border">Filter</span></button>
+                        <div class="dropDown-content" id="filterButtons">
+                            <div>Gryffindor</div>
+                            <div>Ravenclaw</div>
+                            <div>Hufflepuff</div>
+                            <div>Slytherin</div>
+                            <div>Show all</div>
+                        </div>
+                </div>
+            </th>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -70,7 +74,8 @@
             <td><button class="showModalButton">Show profile</button></td>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -79,7 +84,8 @@
             <td><button class="showModalButton">Show profile</button></td>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -88,7 +94,8 @@
             <td><button class="showModalButton">Show profile</button></td>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -97,7 +104,8 @@
             <td><button class="showModalButton">Show profile</button></td>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -106,7 +114,8 @@
             <td><button class="showModalButton">Show profile</button></td>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -115,7 +124,8 @@
             <td><button class="showModalButton">Show profile</button></td>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -124,7 +134,8 @@
             <td><button class="showModalButton">Show profile</button></td>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -133,7 +144,8 @@
             <td><button class="showModalButton">Show profile</button></td>
         </tr>
         <tr>
-            <td>Full name</td>
+            <td>First name</td>
+            <td>Last name</td>
             <td>Gender</td>
             <td>House</td>
             <td>Blood</td>
@@ -143,37 +155,17 @@
         </tr>
     </table>
 </div>
+<div class="modal" id="modal">
+    <div class="modalContent" id="modalContent">
+        <span class="close" id="modalClose">&times;</span>
+        <img alt="house banner" id="houseBanner">
+        <h2 id="modalStudentName"></h2>
+        <h2 id="modalStudentHouse"></h2>
+        <img alt="picture" id="studentPicture">
+    </div>
+</div>
 </body>
 
-<!--<body>-->
-<!--<div class="dropDown">-->
-<!--    <button class="sortByButton">Sort by</button>-->
-<!--    <div style="list-style: none;" class="dropDown-content" id="sortByButtons">-->
-<!--        <div>First name</div>-->
-<!--        <div>Last name</div>-->
-<!--        <div>House</div>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<div class="dropDown">-->
-<!--    <button class="sortByButton">Filter</button>-->
-<!--    <div style="list-style: none;" class="dropDown-content" id="filterButtons">-->
-<!--        <div>Gryffindor</div>-->
-<!--        <div>Ravenclaw</div>-->
-<!--        <div>Hufflepuff</div>-->
-<!--        <div>Slytherin</div>-->
-<!--        <div>Show all</div>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--<div class="modal" id="modal">-->
-<!--    <div class="modalContent" id="modalContent">-->
-<!--        <span class="close" id="modalClose">&times;</span>-->
-<!--        <img alt="house banner" id="houseBanner">-->
-<!--        <h2 id="modalStudentName"></h2>-->
-<!--        <h2 id="modalStudentHouse"></h2>-->
-<!--        <img alt="picture" id="studentPicture">-->
-<!--    </div>-->
-<!--</div>-->
 
 <!--<div id="studentList">-->
 <!--    &lt;!&ndash; The student data goes here &ndash;&gt;-->

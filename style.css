@@ -1,116 +1,280 @@
-body {
-    background: #EEE;
-}
-
-/* Style list of students */
-
-#studentList {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0;
+body{
+    background: #404040;
     margin: 0;
-    list-style: none;
-    align-items: center;
-    justify-content: center;
-    margin-top: 6vw;
+    color: white;
+    font-family: 'Roboto', sans-serif;
 }
 
-#studentList > ul {
-    width: 180px;
-    height: 69px;
-    background: #FFF;
-    margin: 10px;
-    box-shadow: 3px 4px 6px #aaaaaa;
-    border-radius: 6px;
+.grid-container {
+    display: grid;
+    grid-template-columns: 215px 1.1fr 1.5fr;
+    grid-template-rows: 94px 84vh;
+    grid-template-areas:
+            "h1 h2 icons"
+            "aside table table";
 }
 
-#studentList > ul > li:nth-child(1) {
-    padding-top: 10%;
+h1 {
+    grid-area: h1;
+    background: #1C1C1C;
+    margin: 0;
+    text-align: center;
+    padding: 28px 0;
+    font-size: 28px;
 }
 
-/* style drop down menu */
+h2 {
+    grid-area: h2;
+    background: #1C1C1C;
+    margin: 0;
+    padding: 28px 0 0 30px;
+    font-size: 28px;
+}
 
-.dropDown {
-    position: relative;
-    top: 5vw;
-    left: 5vw;
-    display: inline-block;
-    margin-right: 7px;
+.icons {
+    grid-area: icons;
+    background: #1C1C1C;
+    margin: 0;
+    text-align: center;
+    padding: 28px 0;
+}
+
+aside {
+    grid-area: aside;
+    height: 100%;
+    background: #2B2B2B;
+    margin: 0;
+    text-align: center;
+    padding: 28px 0;
+}
+
+table {
+    grid-area: table;
+    width: 96%;
+    border-spacing: 0;
+    margin: 30px 30px 0 30px;
+}
+
+th {
+    background: #1C1C1C;
+    padding: 30px 0 16px 0;
+    border-bottom: 1px solid #FB8218;
+}
+
+.add-border {
+    border-bottom: 1px solid #707070;
+    padding: 0 10px;
+}
+
+td {
+    padding: 20px;
+    background: #262626;
+    text-align: center;
+    border-bottom: 1px solid #707070;
 }
 
 .sortByButton {
-    background-color: #03A5FC;
     color: white;
-    padding: 12px;
-    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    background: none;
     border: none;
+    font-size: inherit;
+    font-weight: inherit;
 }
 
-.dropDown-content {
+.filterByButton {
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    background: none;
+    border: none;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.showModalButton {
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    background: #101010;
+    border-radius: 21px;
+    border: none;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 8px 19px;
+}
+
+.sortByButton:hover {color: #FB8218; cursor: pointer;}
+.filterByButton:hover {color: #FB8218; cursor: pointer;}
+.showModalButton:hover {background: #FB8218; cursor: pointer;}
+
+.collapsible-content {
     display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    min-width: 110px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    margin: 0;
 }
 
-.dropDown-content div {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropDown-content div:hover {background-color: #DDD;}
-
-.dropDown:hover .dropDown-content {display: block;}
-
-.dropDown:hover .sortByButton {background: #0367FC}
-
-/* Modal */
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    padding-top: 100px;
-    left: 0;
-    top: 0;
+.select-class-collapsible {
+    color: white;
     width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.5);
+    background: #101010;
+    padding: 34px 0;
+    margin-top: -28px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid #707070;
+    font-size: 22px;
 }
 
-.modalContent {
-    width: 28vw;
-    height: 33vw;
-    background: #FFF;
-    margin-left: 36vw;
-    margin-right: 50vw;
-    box-shadow: 3px 4px 6px #444;
-    border-radius: 6px;
-    text-align: center;
+.add-new-class-collapsible {
+    width: 100%;
+    background: #101010;
+    padding: 34px 0;
+    font-size: 22px;
 }
 
-.close {
-    float: right;
-    margin: 1vw;
-    font-size: 28px;
-    font-weight: bold;
+.select-class-collapsible:hover {background: #FB8218; cursor: pointer;}
+.add-new-class-collapsible:hover {background: #FB8218; cursor: pointer;}
+
+.class1 {
+    width: 100%;
+    background: #603CF5;
+    padding: 18px 0;
+    font-size: 22px;
+    border-bottom: 1px solid #707070;
 }
 
-.close:hover {
-    cursor: pointer;
-    color: #0367FC;
+.class-options {
+    font-size: 17px;
+    padding: 14px 5px;
+    text-align: start;
+    margin-left: 23px;
+    margin-right: 23px;
 }
 
-/* modal image */
-
-#houseBanner {
-    width: 13vw;
-    margin-top: 3vw;
-    margin-left: 4vw;
+.add-border1 {
+    border-bottom: 1px solid #707070;
+    padding: 0 10px;
 }
+
+.class-options:hover {color: #FB8218; cursor: pointer;}
+
+.details-content {
+    padding: 10px 0;
+    background: #3B3B3B;
+}
+
+
+/*body {*/
+/*    background: #EEE;*/
+/*}*/
+
+/*!* Style list of students *!*/
+
+/*#studentList {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    padding: 0;*/
+/*    margin: 0;*/
+/*    list-style: none;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    margin-top: 6vw;*/
+/*}*/
+
+/*#studentList > ul {*/
+/*    width: 180px;*/
+/*    height: 69px;*/
+/*    background: #FFF;*/
+/*    margin: 10px;*/
+/*    box-shadow: 3px 4px 6px #aaaaaa;*/
+/*    border-radius: 6px;*/
+/*}*/
+
+/*#studentList > ul > li:nth-child(1) {*/
+/*    padding-top: 10%;*/
+/*}*/
+
+/*!* style drop down menu *!*/
+
+/*.dropDown {*/
+/*    position: relative;*/
+/*    top: 5vw;*/
+/*    left: 5vw;*/
+/*    display: inline-block;*/
+/*    margin-right: 7px;*/
+/*}*/
+
+/*.sortByButton {*/
+/*    background-color: #03A5FC;*/
+/*    color: white;*/
+/*    padding: 12px;*/
+/*    font-size: 16px;*/
+/*    border: none;*/
+/*}*/
+
+/*.dropDown-content {*/
+/*    display: none;*/
+/*    position: absolute;*/
+/*    background-color: #f1f1f1;*/
+/*    min-width: 110px;*/
+/*    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);*/
+/*    z-index: 1;*/
+/*    margin: 0;*/
+/*}*/
+
+/*.dropDown-content div {*/
+/*    color: black;*/
+/*    padding: 12px 16px;*/
+/*    text-decoration: none;*/
+/*    display: block;*/
+/*}*/
+
+/*.dropDown-content div:hover {background-color: #DDD;}*/
+
+/*.dropDown:hover .dropDown-content {display: block;}*/
+
+/*.dropDown:hover .sortByButton {background: #0367FC}*/
+
+/*!* Modal *!*/
+
+/*.modal {*/
+/*    display: none;*/
+/*    position: fixed;*/
+/*    z-index: 1;*/
+/*    padding-top: 100px;*/
+/*    left: 0;*/
+/*    top: 0;*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    overflow: auto;*/
+/*    background-color: rgba(0,0,0,0.5);*/
+/*}*/
+
+/*.modalContent {*/
+/*    width: 28vw;*/
+/*    height: 33vw;*/
+/*    background: #FFF;*/
+/*    margin-left: 36vw;*/
+/*    margin-right: 50vw;*/
+/*    box-shadow: 3px 4px 6px #444;*/
+/*    border-radius: 6px;*/
+/*    text-align: center;*/
+/*}*/
+
+/*.close {*/
+/*    float: right;*/
+/*    margin: 1vw;*/
+/*    font-size: 28px;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/*.close:hover {*/
+/*    cursor: pointer;*/
+/*    color: #0367FC;*/
+/*}*/
+
+/*!* modal image *!*/
+
+/*#houseBanner {*/
+/*    width: 13vw;*/
+/*    margin-top: 3vw;*/
+/*    margin-left: 4vw;*/
+/*}*/

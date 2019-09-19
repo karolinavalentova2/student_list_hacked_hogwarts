@@ -32,7 +32,7 @@
             </div>
         <div class="add-new-class-collapsible">Add new class</div>
     </aside>
-    <table class="studentListTable">
+    <table class="studentListTable" id="studentListTable">
         <tr>
             <th><span class="add-border">First name</span></th>
             <th><span class="add-border">Last name</span></th>
@@ -63,96 +63,6 @@
                 </div>
             </th>
         </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Gender</td>
-            <td>House</td>
-            <td>Blood</td>
-            <td>Inquisitorial squad</td>
-            <td></td>
-            <td><button class="showModalButton">Show profile</button></td>
-        </tr>
     </table>
 </div>
 <div class="modal" id="modal">
@@ -160,43 +70,52 @@
         <span class="close" id="modalClose">&times;</span><br>
         <img src="student_pictures/potter_h.png" alt="picture" id="studentPicture" style="padding: 0 10px 0 54px;">
         <img src="images/gryffindor.png" alt="house banner" id="houseBanner" style="width: 90px; padding: 0 10px;">
-        <table class="modal-table">
+        <table class="modal-table" id="studentModalData">
             <tr>
                 <td>First name:</td>
                 <td id="modalStudentFirstName">Harry</td>
             </tr>
+
             <tr>
                 <td>Middle name/ nickname:</td>
                 <td>Harry</td>
             </tr>
+
             <tr>
                 <td>Last name:</td>
                 <td id="modalStudentLastName">Harry</td>
             </tr>
+
             <tr>
                 <td>Gender:</td>
                 <td>Harry</td>
             <tr>
+
             <tr>
                 <td>House:</td>
-                <td id="modalStudentHouse">Harry</td>
+                <td>Harry</td>
             </tr>
+
             <tr>
                 <td>Blood:</td>
                 <td>Harry</td>
             </tr>
+
             <tr>
                 <td>Inquisitorial squad:</td>
                 <td>Harry</td>
             <tr>
+
             <tr>
                 <td>Prefect:</td>
                 <td>Harry</td>
             <tr>
+
             <tr>
                 <td>Expelled:</td>
                 <td>Harry</td>
             <tr>
+
         </table>
     </div>
 </div>
@@ -210,10 +129,15 @@
 <!--</body>-->
 
 <template id="studentEntry">
-    <ul style="list-style-type: none">
-        <li></li>
-        <li></li>
-        <img style="display: none;"/>
-    </ul>
+    <tr>
+        <td>First name</td>
+        <td>Last name</td>
+        <td>Gender</td>
+        <td>House</td>
+        <td>Blood</td>
+        <td>Inquisitorial squad</td>
+        <td></td>
+        <td><button class="showModalButton">Show profile</button></td>
+    </tr>
 </template>
 </html>

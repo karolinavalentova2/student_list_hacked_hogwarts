@@ -10,49 +10,51 @@
 <div class="grid-container">
     <h1>Student list</h1>
     <h2>Infamous class 1991</h2>
-    <div class="icons">
-        <img src="images/profile.png" alt="profile.png" style="width: 40px; float: right; margin-right: 40px;">
-        <img src="images/mssg.png" alt="mssg.png" style="width: 40px; float: right; margin-right: 40px;">
-    </div>
+<!--    <div class="icons">-->
+<!--        <img src="images/profile.png" alt="profile.png" style="width: 40px; float: right; margin-right: 40px;">-->
+<!--        <img src="images/mssg.png" alt="mssg.png" style="width: 40px; float: right; margin-right: 40px;">-->
+<!--    </div>-->
     <aside class="main-menu">
         <button class="select-class-collapsible collapsible">Select class</button>
             <div class="collapsible-content">
-                <div class="class1">Infamous class</br>1991</div>
-                <div class="class-options collapsible"><span class="add-border1">Details<span>+</span></span></div>
+                <div class="class1">Infamous class<br>1991</div>
+                <div class="class-options collapsible"><span class="add-border1">Details</span></div>
                     <div class="details-content collapsible-content">
-                        <div class="class-options"><span class="add-border1">Students<span>40</span></span></div>
-                        <div class="class-options"><span class="add-border1">Expelled<span>3</span></span></div>
-                        <div class="class-options"><span class="add-border1">Griffindor<span>10</span></span></div>
-                        <div class="class-options"><span class="add-border1">Ravenclaw<span>10</span></span></div>
-                        <div class="class-options"><span class="add-border1">Hufflepuf<span>10</span></span></div>
-                        <div class="class-options"><span class="add-border1">Slytherin<span>10</span></span></div>
+                        <div class="class-options"><span class="add-border1">Students <span class="details-value" id="totalStudents"></span></span></div>
+                        <div class="class-options"><span class="add-border1">Expelled <span class="details-value" id="expelledStudentsCount"></span></span></div>
+                        <div class="class-options"><span class="add-border1">Griffindor <span class="details-value" id="griffindorStudentsCount"></span></span></div>
+                        <div class="class-options"><span class="add-border1">Ravenclaw <span class="details-value" id="ravenclawStudentsCount"></span></span></div>
+                        <div class="class-options"><span class="add-border1">Hufflepuf <span class="details-value" id="hufflepufStudentsCount"></span></span></div>
+                        <div class="class-options"><span class="add-border1">Slytherin <span class="details-value" id="slytherinStudentsCount"></span></span></div>
                     </div>
-                <div class="class-options"><span class="add-border1">Set prefect</span></div>
-                <div class="class-options"><span class="add-border1">Add student</span></div>
+                <div class="class-options"><span class="add-border1">Show prefects</span></div>
+                <div class="class-options"><span class="add-border1">Expelled students</span></div>
             </div>
         <div class="add-new-class-collapsible">Add new class</div>
     </aside>
-    <table class="studentListTable" id="studentListTable">
-        <tr>
-            <th><span class="add-border">First name</span></th>
-            <th><span class="add-border">Last name</span></th>
-            <th><span class="add-border">Gender</span></th>
-            <th><span class="add-border">House</span></th>
-            <th><span class="add-border">Blood</span></th>
-            <th><span class="add-border">Inquisitorial squad</span></th>
-            <th>
-                <div class="dropDown">
-                    <button class="sortByButton"><span class="add-border">Sort by</span></button>
-                    <div class="dropDown-content" id="sortByButtons">
-                        <div>First name</div>
-                        <div>Last name</div>
-                        <div>House</div>
+    <div class="panel-body">
+        <table class="studentListTable flex-table table table-striped table-hover">
+            <thead>
+            <tr>
+                <th><span class="add-border">First name</span></th>
+                <th><span class="add-border">Last name</span></th>
+                <th><span class="add-border">Gender</span></th>
+                <th><span class="add-border">House</span></th>
+                <th><span class="add-border">Blood</span></th>
+                <th><span class="add-border">House Prefect</span></th>
+                <th>
+                    <div class="dropDown">
+                        <button class="sortByButton"><span class="add-border">Sort by</span></button>
+                        <div class="dropDown-content" id="sortByButtons">
+                            <div>First name</div>
+                            <div>Last name</div>
+                            <div>House</div>
+                        </div>
                     </div>
-                </div>
-            </th>
-            <th>
-                <div class="dropDown">
-                    <button class="filterByButton"><span class="add-border">Filter</span></button>
+                </th>
+                <th>
+                    <div class="dropDown">
+                        <button class="filterByButton"><span class="add-border">Filter</span></button>
                         <div class="dropDown-content" id="filterButtons">
                             <div>Gryffindor</div>
                             <div>Ravenclaw</div>
@@ -60,10 +62,15 @@
                             <div>Slytherin</div>
                             <div>Show all</div>
                         </div>
-                </div>
-            </th>
-        </tr>
-    </table>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="studentListTable"></tbody>
+        </table>
+    </div>
+
+
 </div>
 <div class="modal" id="modal">
     <div class="modalContent" id="modalContent">
@@ -73,49 +80,40 @@
         <table class="modal-table" id="studentModalData">
             <tr>
                 <td>First name:</td>
-                <td id="modalStudentFirstName">Harry</td>
+                <td id="modalStudentFirstName"></td>
             </tr>
-
             <tr>
                 <td>Middle name/ nickname:</td>
-                <td>Harry</td>
+                <td></td>
             </tr>
-
             <tr>
                 <td>Last name:</td>
-                <td id="modalStudentLastName">Harry</td>
+                <td id="modalStudentLastName"></td>
             </tr>
-
             <tr>
                 <td>Gender:</td>
-                <td>Harry</td>
+                <td></td>
             <tr>
-
             <tr>
                 <td>House:</td>
-                <td>Harry</td>
+                <td></td>
             </tr>
-
             <tr>
                 <td>Blood:</td>
-                <td>Harry</td>
+                <td></td>
             </tr>
-
             <tr>
                 <td>Inquisitorial squad:</td>
-                <td>Harry</td>
+                <td><button id="inquisitorialButton">Inactive</button></td>
             <tr>
-
             <tr>
                 <td>Prefect:</td>
-                <td>Harry</td>
+                <td><button id="prefectButton">Inactive</button></td>
             <tr>
-
             <tr>
                 <td>Expelled:</td>
-                <td>Harry</td>
+                <td><button id="expelButton">Inactive</button></td>
             <tr>
-
         </table>
     </div>
 </div>

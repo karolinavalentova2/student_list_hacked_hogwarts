@@ -3,15 +3,18 @@ body{
     margin: 0;
     color: white;
     font-family: 'Roboto', sans-serif;
+    overflow: hidden;
 }
-
+.panel-body {
+    height: 87vh;
+}
 .grid-container {
     display: grid;
-    grid-template-columns: 215px 1.1fr 1.5fr;
-    grid-template-rows: 94px 84vh;
+    grid-template-columns: 210px auto;
+    grid-template-rows: 94px 85vw;
     grid-template-areas:
-            "h1 h2 icons"
-            "aside table table";
+            "h1 h2"
+            "aside table";
 }
 
 h1 {
@@ -50,7 +53,7 @@ aside {
 
 .studentListTable {
     grid-area: table;
-    width: 96%;
+    /*width: 96%;*/
     border-spacing: 0;
     margin: 30px 30px 0 30px;
 }
@@ -105,7 +108,7 @@ td {
 .dropDown-content > div {padding: 9px;}
 .dropDown-content > div:hover {color: #FB8218; cursor: pointer;}
 
-div#sortByButtons {margin-left: 2vw;}
+div#sortByButtons {margin-left: 3vw;}
 
 .filterByButton {
     color: white;
@@ -116,7 +119,7 @@ div#sortByButtons {margin-left: 2vw;}
     font-weight: inherit;
 }
 
-div#filterButtons {margin-left: 6vw;}
+div#filterButtons {margin-left: 3vw;}
 
 
 .sortByButton:hover {color: #FB8218; cursor: pointer;}
@@ -124,6 +127,10 @@ div#filterButtons {margin-left: 6vw;}
 
 .dropDown:hover .dropDown-content {display: block;}
 
+/* Main menu details value */
+.details-value {
+    color: #FB8218;
+}
 
 /* Display modal */
 .showModalButton {
@@ -241,4 +248,53 @@ div#filterButtons {margin-left: 6vw;}
 
 td#modal {
     text-align: start;
+}
+
+.test1 {
+    background: #04AC25;
+    width: 30px;
+}
+
+
+/* table layout source: https://codepen.io/tfzvang/pen/WQBwVo */
+.panel-body {
+    padding: 0;
+}
+.panel-body.panel-regular-table {
+    overflow-y: auto;
+}
+.panel-body table.flex-table {
+    display: flex;
+    flex-direction: column;
+    height: 86vh;
+}
+.panel-body table.flex-table thead,
+.panel-body table.flex-table tbody {
+    display: block;
+}
+.panel-body table.flex-table thead {
+    margin-right: 0;
+}
+.panel-body table.flex-table tbody {
+    flex: 1;
+    overflow-y: scroll;
+}
+.panel-body table.flex-table tr {
+    width: 100%;
+    display: flex;
+}
+.panel-body table.flex-table tr td,
+.panel-body table.flex-table tr th {
+    display: block;
+    flex: 1;
+}
+.panel-body table.flex-widths.flex-table-aligned thead > tr {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.panel-body table.flex-widths tr td:nth-child(2), .panel-body table.flex-widths tr th:nth-child(2) {
+    flex: 3;
+}
+.panel-body table.flex-widths tr td:nth-child(4), .panel-body table.flex-widths tr th:nth-child(4) {
+    flex: 2;
 }

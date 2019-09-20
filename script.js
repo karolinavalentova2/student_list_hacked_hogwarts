@@ -1,7 +1,30 @@
-
+'use strict';
 let storage = {
     studentData: [],
     studentFamily: [],
+};
+
+let stats = {
+    total: 0,
+    expelled: 0,
+    house: {
+        griffindor: 0,
+        ravenclaw: 0,
+        slytherin: 0,
+        hufflepuff: 0,
+    }
+};
+
+const inquisitorialConditions = {
+    house: 'Slytherin',
+    blood: 'Pure-blood',
+};
+
+let totalPrefects = {
+    'Gryffindor': 0,
+    'Ravenclaw': 0,
+    'Hufflepuff': 0,
+    'Slytherin': 0,
 };
 
 window.onload = doSetup;
@@ -13,9 +36,8 @@ function doSetup(){
         document.getElementById('modal').style.display = 'none';
     };
 
-    // Function collapsible in main menu; source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible
+    // Function do collapsible in main menu
     let coll = document.getElementsByClassName("collapsible");
-
     for (let i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", function() {
             this.classList.toggle("active");
@@ -31,6 +53,7 @@ function doSetup(){
 
 async function processStudentData() {
     try {
+        setButtonActions();
         // Calling fetch within a function in order to pass the returned data to .json() to be converted into a javascript object
         let studentData = await (await fetch("http://petlatkea.dk/2019/hogwartsdata/students.json")).json();
         let studentFamily = await (await fetch("http://petlatkea.dk/2019/hogwartsdata/families.json")).json();
@@ -43,11 +66,19 @@ async function processStudentData() {
         storage.studentFamily = studentFamily;
 
         temporaryStudentData.forEach((student) => {
-            storage.studentData.push(setBlood(student));
+
+            stats.total++;
+            countStudentByHouse(student);
+            student = setBlood(student);
+
+            student.isInquisitorialActive = false;
+            student.isExpeled = false;
+            student.isPrefectActive = false;
+
+            storage.studentData.push(student);
         });
 
         showStudentData();
-        setButtonActions();
     } catch(error) {
         console.error('Cannot read student list, reason: ' + error.message);
     }
@@ -159,14 +190,52 @@ function setBlood(student) {
     }
 }
 
-function showStudentData() {
+function showStudentData(shouldClearTableBefore = false) {
+    if(shouldClearTableBefore) deleteChilds(document.getElementById('studentListTable'));
+
     const studentListElement = document.getElementById('studentListTable');
     const studentListEntryTemplate = document.getElementById('studentEntry');
 
     storage.studentData.forEach((studentEntry) => {
         let temporaryStudentEntryTemplate = studentListEntryTemplate.content.cloneNode(true);
         studentListElement.appendChild(buildStudentEntry(temporaryStudentEntryTemplate, studentEntry));
-    })
+    });
+
+    const doSetStudentCount = () => {
+        document.getElementById('totalStudents').textContent = stats.total;
+        document.getElementById('expelledStudentsCount').textContent = 0;
+        document.getElementById('griffindorStudentsCount').textContent = stats.house.griffindor;
+        document.getElementById('ravenclawStudentsCount').textContent = stats.house.ravenclaw;
+        document.getElementById('hufflepufStudentsCount').textContent = stats.house.hufflepuff;
+        document.getElementById('slytherinStudentsCount').textContent = stats.house.slytherin;
+    };
+
+    doSetStudentCount();
+}
+
+function countStudentByHouse(student) {
+    switch (student.house) {
+        case 'Gryffindor': {
+            stats.house.griffindor++;
+            break;
+        }
+        case 'Ravenclaw': {
+            stats.house.ravenclaw++;
+            break;
+        }
+        case 'Hufflepuff': {
+            stats.house.hufflepuff++;
+            break;
+        }
+        case 'Slytherin': {
+            stats.house.slytherin++;
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+
 }
 
 function buildStudentEntry(element, studentData) {
@@ -176,9 +245,16 @@ function buildStudentEntry(element, studentData) {
     element.firstElementChild.cells[3].textContent = studentData.house;
     element.firstElementChild.cells[4].textContent = studentData.blood;
 
+    element.firstElementChild.cells[5].textContent = studentData.isPrefectActive ? 'Yes' : 'No';
+    element.firstElementChild.cells[5].id = `${studentData.fullname.firstName}_${studentData.fullname.lastName}_${studentData.gender}_prefect`;
+
+
     element.firstElementChild.cells[7].firstChild.onclick = () => {
       showModal(studentData);
     };
+
+
+    element.firstElementChild.id = `${studentData.fullname.firstName}_${studentData.fullname.lastName}_${studentData.gender}`;
 
     return element;
 }
@@ -214,16 +290,105 @@ function showModal(studentData) {
     // TR 4 IS there EMPTY, NO CLUE WHY
     modalContent.children[0].children[5].children[1].textContent = studentData.house;
     modalContent.children[0].children[6].children[1].textContent = studentData.blood;
-    modalContent.children[0].children[7].children[1].textContent = 'TODO';
+
+    const inquisitorialButton = modalContent.children[0].children[7].children[1].firstElementChild;
+
+    inquisitorialButton.textContent = studentData.isInquisitorialActive ? 'Active' : 'Inactive';
+
+    inquisitorialButton.onclick = () => {
+        changeStudentFlags(inquisitorialButton, studentData);
+    };
     // TR 8 IS there EMPTY, NO CLUE WHY
-    modalContent.children[0].children[9].children[1].textContent = 'TODO';
+    const prefectButton = modalContent.children[0].children[9].children[1].firstElementChild;
+
+    prefectButton.textContent = studentData.isPrefectActive ? 'Active' : 'Inactive';
+
+    prefectButton.onclick = () => {
+        changeStudentFlags(prefectButton, studentData);
+    };
     // TR 10 IS there EMPTY, NO CLUE WHY
-    modalContent.children[0].children[11].children[1].textContent = 'TODO';
+    const expelButton = modalContent.children[0].children[11].children[1].firstElementChild;
+
+    expelButton.textContent = studentData.isExpeled ? 'Active' : 'Inactive';
+
+    expelButton.onclick = () => {
+        changeStudentFlags(expelButton, studentData);
+    };
 
 
     document.getElementById('modal').style.display = 'block';
 }
 
+function changeStudentFlags(button, student) {
+    switch (button.id) {
+        case 'inquisitorialButton': {
+            if(!student.isInquisitorialActive && (inquisitorialConditions.blood === student.blood || inquisitorialConditions.house === student.house) && button.textContent === 'Inactive') {
+                student.isInquisitorialActive = true;
+
+                // let entryInquisitorialStatusElement = document.getElementById(`${student.fullname.firstName}_${student.fullname.lastName}_${student.gender}_inquisitorial`);
+                //
+                // entryInquisitorialStatusElement.textContent = 'Active';
+                button.textContent = 'Active';
+                break;
+            } else {
+                // let entryInquisitorialStatusElement = document.getElementById(`${student.fullname.firstName}_${student.fullname.lastName}_${student.gender}_inquisitorial`);
+                //
+                // entryInquisitorialStatusElement.textContent = 'Inactive';
+                button.textContent = 'Inactive';
+                student.isInquisitorialActive = false;
+                break;
+            }
+        }
+        case 'expelButton': {
+            if(button.textContent === 'Inactive' && student.isExpeled === false) {
+                student.isExpeled = true;
+
+                hideElementById(`${student.fullname.firstName}_${student.fullname.lastName}_${student.gender}`);
+
+                stats.expelled++;
+                button.textContent = 'Active';
+            } else {
+                student.isExpeled = false;
+
+                showElementById(`${student.fullname.firstName}_${student.fullname.lastName}_${student.gender}`);
+                stats.expelled--;
+                button.textContent = 'Inactive';
+            }
+
+            document.getElementById('expelledStudentsCount').textContent = stats.expelled;
+            document.getElementById('totalStudents').textContent = String(stats.total - stats.expelled);
+            break;
+        }
+        case 'prefectButton': {
+            if(totalPrefects[student.house] < 2 && button.textContent === 'Inactive') {
+                student.isPrefectActive = true;
+
+                let isPrefectEntryText = document.getElementById(`${student.fullname.firstName}_${student.fullname.lastName}_${student.gender}_prefect`);
+                isPrefectEntryText.textContent = 'Yes';
+
+                button.textContent = 'Active';
+                totalPrefects[student.house]++;
+                break;
+            } else if(totalPrefects[student.house] <= 2 && button.textContent === 'Active'){
+                totalPrefects[student.house]--;
+
+                let isPrefectEntryText = document.getElementById(`${student.fullname.firstName}_${student.fullname.lastName}_${student.gender}_prefect`);
+                isPrefectEntryText.textContent = 'No';
+
+                button.textContent = 'Inactive';
+                student.isPrefectActive = false;
+                break;
+            } else {
+                alert('The maximum amount of prefects was reached!');
+
+                break;
+            }
+        }
+        default: {
+            break;
+        }
+    }
+}
 
 function setButtonActions(){
     const sortByButtons = document.getElementById('sortByButtons');
@@ -254,32 +419,32 @@ function sortBy(typeOfSorting) {
     switch(typeOfSorting) {
         case 'First name': {
             // Sort by first name; source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-            let sortedArray = studentData.sort((a,b) => {
+            let sortedArray = storage.studentData.sort((a,b) => {
                 if (a.fullname.firstName < b.fullname.firstName) return -1;
                 if (a.fullname.firstName > b.fullname.firstName) return 1;
                 return 0;
             });
-            deleteChilds(document.getElementById('studentList'));
+            deleteChilds(document.getElementById('studentListTable'));
             showStudentData(sortedArray);
             break;
         }
         case 'Last name': {
-            let sortedArray = studentData.sort((a,b) => {
+            let sortedArray = storage.studentData.sort((a,b) => {
                 if (a.fullname.lastName < b.fullname.lastName) return -1;
                 if (a.fullname.lastName > b.fullname.lastName) return 1;
                 return 0;
             });
-            deleteChilds(document.getElementById('studentList'));
+            deleteChilds(document.getElementById('studentListTable'));
             showStudentData(sortedArray);
             break;
         }
         case 'House': {
-            let sortedArray = studentData.sort((a,b) => {
+            let sortedArray = storage.studentData.sort((a,b) => {
                 if (a['house'] < b['house']) return -1;
                 if (a['house'] > b['house']) return 1;
                 return 0;
             });
-            deleteChilds(document.getElementById('studentList'));
+            deleteChilds(document.getElementById('studentListTable'));
             showStudentData(sortedArray);
             break;
         }
@@ -298,19 +463,25 @@ function deleteChilds(parentElement) {
     }
 }
 
+function hideElementById(element) {
+    document.getElementById(element).style.display = 'none';
+}
+function showElementById(element) {
+    document.getElementById(element).style.display = 'flex';
+}
 function filterBy(houseName) {
     if(houseName === 'Show all') {
-        deleteChilds(document.getElementById('studentList'));
-        showStudentData(studentData);
+        deleteChilds(document.getElementById('studentListTable'));
+        showStudentData(storage.studentData);
         return;
     }
     let filteredArray;
 
-    filteredArray = studentData.filter(student => {
+    filteredArray = storage.studentData.filter(student => {
         return student['house'] === houseName;
     });
 
-    deleteChilds(document.getElementById('studentList'));
+    deleteChilds(document.getElementById('studentListTable'));
     showStudentData(filteredArray);
 }
 
@@ -319,4 +490,3 @@ function filterBy(houseName) {
 //     modal.children[0].style.border = modalColor;
 //     modal.style.display = 'block';
 // }
-//

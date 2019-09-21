@@ -44,7 +44,7 @@ h2 {
 
 aside {
     grid-area: aside;
-    height: 100%;
+    height: 100vh;
     background: #2B2B2B;
     margin: 0;
     text-align: center;
@@ -53,7 +53,6 @@ aside {
 
 .studentListTable {
     grid-area: table;
-    /*width: 96%;*/
     border-spacing: 0;
     margin: 30px 30px 0 30px;
 }
@@ -220,11 +219,9 @@ div#filterButtons {margin-left: 3vw;}
     width: 500px;
     height: 740px;
     background: #262626;
-    margin-left: 36vw;
-    margin-right: 50vw;
+    margin-left: 25%;
     text-align: center;
     color: white;
-    max-width: 100%;
 }
 
 .close {
@@ -255,7 +252,79 @@ td#modal {
     width: 30px;
 }
 
+/* Responsive */
 
+
+@media (max-width: 1300px) {
+    .house-prefect {
+        display: none!important;
+    }
+}
+
+@media (max-width: 1120px) {
+    .gender {
+        display: none!important;
+    }
+    .blood {
+        display: none!important;
+    }
+}
+
+@media (max-width: 800px) {
+    .grid-container {
+        display: grid;
+        grid-template-columns: 210px auto;
+        grid-template-rows: 94px 94px 85vw;
+        grid-template-areas:
+                "h1 h2"
+                "aside aside"
+                "table table";
+    }
+    aside {
+        grid-area: aside;
+        background: #2B2B2B;
+        margin: 0;
+        text-align: center;
+        padding: 28px 0 0 0;
+        display: flex;
+    }
+    .select-class-collapsible {
+        color: white;
+        width: 17vw;
+        height: 25px;
+        background: #101010;
+        border-top: none;
+        border-left: none;
+        border-bottom: none;
+        font-size: 22px;
+        border-right: 1px solid #707070;
+    }
+
+    div.collapsible-content {
+        display: none;
+        margin-top: -27px;
+    }
+    .add-new-class-collapsible {
+        width: 17vw;
+        height: 25px;
+        background: #101010;
+        padding: 34px 0;
+        font-size: 22px;
+        z-index: 1;
+        margin-top: -28px;
+    }
+    .panel-body table.flex-table {
+        display: flex;
+        flex-direction: column;
+        height: 86vh;
+        width: 94vw;
+    }
+
+}
+
+/**/
+/**/
+/**/
 /* table layout source: https://codepen.io/tfzvang/pen/WQBwVo */
 .panel-body {
     padding: 0;
@@ -298,3 +367,6 @@ td#modal {
 .panel-body table.flex-widths tr td:nth-child(4), .panel-body table.flex-widths tr th:nth-child(4) {
     flex: 2;
 }
+/**/
+/**/
+/**/

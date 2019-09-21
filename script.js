@@ -1,4 +1,10 @@
 'use strict';
+let HACKING_MODE = false;
+if(window.location.href.includes('doHackMe')) {
+    console.log('HACKING MODE IS ON!')
+    HACKING_MODE = true;
+}
+
 let storage = {
     studentData: [],
     studentFamily: [],
@@ -66,8 +72,6 @@ async function processStudentData() {
         storage.studentFamily = studentFamily;
 
         temporaryStudentData.forEach((student) => {
-
-            stats.total++;
             countStudentByHouse(student);
             student = setBlood(student);
 
@@ -173,37 +177,53 @@ function setBlood(student) {
     });
 
     if(!isHalfBlooded && isPureBlooded) {
-        return {
-            ...student,
-            blood: 'Pure-blood',
-        }
+        student.blood = 'Pure-blood';
+        return student
     } else if(isHalfBlooded && isPureBlooded) {
-        return {
-            ...student,
-            blood: 'Half-blood',
-        }
+        student.blood = 'Half-blood';
+        return student
     } else {
-        return {
-            ...student,
-            blood: 'Half-blood',
-        }
+        student.blood = 'Half-blood';
+        return student
     }
 }
 
-function showStudentData(shouldClearTableBefore = false) {
+function showStudentData(shouldClearTableBefore = false, customArrayToBeShown = null) {
     if(shouldClearTableBefore) deleteChilds(document.getElementById('studentListTable'));
-
     const studentListElement = document.getElementById('studentListTable');
     const studentListEntryTemplate = document.getElementById('studentEntry');
 
-    storage.studentData.forEach((studentEntry) => {
-        let temporaryStudentEntryTemplate = studentListEntryTemplate.content.cloneNode(true);
-        studentListElement.appendChild(buildStudentEntry(temporaryStudentEntryTemplate, studentEntry));
-    });
+    if(customArrayToBeShown) {
+        customArrayToBeShown.forEach((studentEntry) => {
+            if(HACKING_MODE){
+                studentEntry = randomizeBloodStatus(studentEntry);
+            }
+
+            let temporaryStudentEntryTemplate = studentListEntryTemplate.content.cloneNode(true);
+            const newStudentListEntry = buildStudentEntry(temporaryStudentEntryTemplate, studentEntry);
+
+            studentListElement.appendChild(newStudentListEntry);
+        });
+    } else {
+        storage.studentData.forEach((studentEntry) => {
+            if(HACKING_MODE){
+                studentEntry = randomizeBloodStatus(studentEntry);
+            }
+
+            let temporaryStudentEntryTemplate = studentListEntryTemplate.content.cloneNode(true);
+            const newStudentListEntry = buildStudentEntry(temporaryStudentEntryTemplate, studentEntry);
+
+            studentListElement.appendChild(newStudentListEntry);
+        });
+    }
+
+    if(HACKING_MODE) {
+        insertMe();
+    }
 
     const doSetStudentCount = () => {
         document.getElementById('totalStudents').textContent = stats.total;
-        document.getElementById('expelledStudentsCount').textContent = 0;
+        document.getElementById('expelledStudentsCount').textContent = stats.expelled;
         document.getElementById('griffindorStudentsCount').textContent = stats.house.griffindor;
         document.getElementById('ravenclawStudentsCount').textContent = stats.house.ravenclaw;
         document.getElementById('hufflepufStudentsCount').textContent = stats.house.hufflepuff;
@@ -214,6 +234,7 @@ function showStudentData(shouldClearTableBefore = false) {
 }
 
 function countStudentByHouse(student) {
+    stats.total++;
     switch (student.house) {
         case 'Gryffindor': {
             stats.house.griffindor++;
@@ -242,10 +263,13 @@ function buildStudentEntry(element, studentData) {
     element.firstElementChild.cells[0].textContent = studentData.fullname.firstName;
     element.firstElementChild.cells[1].textContent = studentData.fullname.lastName;
     element.firstElementChild.cells[2].textContent = studentData.gender;
+    element.firstElementChild.cells[2].className += "gender";
     element.firstElementChild.cells[3].textContent = studentData.house;
     element.firstElementChild.cells[4].textContent = studentData.blood;
+    element.firstElementChild.cells[4].className += "blood";
 
     element.firstElementChild.cells[5].textContent = studentData.isPrefectActive ? 'Yes' : 'No';
+    element.firstElementChild.cells[5].className += "house-prefect";
     element.firstElementChild.cells[5].id = `${studentData.fullname.firstName}_${studentData.fullname.lastName}_${studentData.gender}_prefect`;
 
 
@@ -265,23 +289,24 @@ function showModal(studentData) {
     let modalContent = document.getElementById('studentModalData');
 
     if(studentData.house === 'Gryffindor'){
-        modalColor = 'thick solid #a34146';
+        modalColor = '2px solid #a34146';
         houseBannerSource = './images/gryffindor.png';
     }
     if(studentData.house === 'Ravenclaw'){
-        modalColor = 'thick solid #27388f';
+        modalColor = '2px solid #27388f';
         houseBannerSource = './images/ravenclaw.png';
     }
     if(studentData.house === 'Hufflepuff'){
-        modalColor = 'thick solid #baba2f';
+        modalColor = '2px solid #baba2f';
         houseBannerSource = './images/hufflepuff.png';
     }
     if(studentData.house === 'Slytherin'){
-        modalColor = 'thick solid #166335';
+        modalColor = '2px solid #166335';
         houseBannerSource = './images/slytherin.png';
     }
     document.getElementById('houseBanner').src = houseBannerSource;
     document.getElementById('studentPicture').src = studentData.picture;
+    document.getElementById('modalContent').style.border = modalColor;
 
     modalContent.children[0].children[0].children[1].textContent = studentData.fullname.firstName;
     modalContent.children[0].children[1].children[1].textContent = studentData.fullname.middleName;
@@ -319,11 +344,27 @@ function showModal(studentData) {
     document.getElementById('modal').style.display = 'block';
 }
 
+function removeInquisitorialStudent(student) {
+    setTimeout(() => {
+        storage.studentData.forEach((studentEntry) => {
+            if(student.fullname.lastName === studentEntry.fullname.lastName) {
+                studentEntry.isInquisitorialActive = false;
+                console.log(`Removed ${studentEntry.fullname.firstName} ${studentEntry.fullname.lastName} from the inquisitorial squad`)
+            }
+        })
+    }, 15000)
+}
+
 function changeStudentFlags(button, student) {
     switch (button.id) {
         case 'inquisitorialButton': {
             if(!student.isInquisitorialActive && (inquisitorialConditions.blood === student.blood || inquisitorialConditions.house === student.house) && button.textContent === 'Inactive') {
                 student.isInquisitorialActive = true;
+
+
+                if(HACKING_MODE) {
+                    removeInquisitorialStudent(student);
+                }
 
                 // let entryInquisitorialStatusElement = document.getElementById(`${student.fullname.firstName}_${student.fullname.lastName}_${student.gender}_inquisitorial`);
                 //
@@ -340,6 +381,12 @@ function changeStudentFlags(button, student) {
             }
         }
         case 'expelButton': {
+            if(HACKING_MODE) {
+                if(student.fullname.firstName === 'Karolina' && student.fullname.lastName === 'Valentova') {
+                    alert(`I cannot be expelled you puny human!`);
+                    break;
+                }
+            }
             if(button.textContent === 'Inactive' && student.isExpeled === false) {
                 student.isExpeled = true;
 
@@ -424,8 +471,9 @@ function sortBy(typeOfSorting) {
                 if (a.fullname.firstName > b.fullname.firstName) return 1;
                 return 0;
             });
-            deleteChilds(document.getElementById('studentListTable'));
-            showStudentData(sortedArray);
+            clearTotalCount();
+            sortedArray.forEach((student) => countStudentByHouse(student));
+            showStudentData(true, sortedArray);
             break;
         }
         case 'Last name': {
@@ -434,8 +482,9 @@ function sortBy(typeOfSorting) {
                 if (a.fullname.lastName > b.fullname.lastName) return 1;
                 return 0;
             });
-            deleteChilds(document.getElementById('studentListTable'));
-            showStudentData(sortedArray);
+            clearTotalCount();
+            sortedArray.forEach((student) => countStudentByHouse(student));
+            showStudentData(true, sortedArray);
             break;
         }
         case 'House': {
@@ -444,8 +493,9 @@ function sortBy(typeOfSorting) {
                 if (a['house'] > b['house']) return 1;
                 return 0;
             });
-            deleteChilds(document.getElementById('studentListTable'));
-            showStudentData(sortedArray);
+            clearTotalCount();
+            sortedArray.forEach((student) => countStudentByHouse(student));
+            showStudentData(true, sortedArray);
             break;
         }
         default: {
@@ -462,7 +512,6 @@ function deleteChilds(parentElement) {
         child = parentElement.lastElementChild;
     }
 }
-
 function hideElementById(element) {
     document.getElementById(element).style.display = 'none';
 }
@@ -471,8 +520,10 @@ function showElementById(element) {
 }
 function filterBy(houseName) {
     if(houseName === 'Show all') {
-        deleteChilds(document.getElementById('studentListTable'));
-        showStudentData(storage.studentData);
+        showStudentData(true, storage.studentData);
+
+        clearTotalCount();
+        storage.studentData.forEach((student) => countStudentByHouse(student));
         return;
     }
     let filteredArray;
@@ -481,12 +532,61 @@ function filterBy(houseName) {
         return student['house'] === houseName;
     });
 
-    deleteChilds(document.getElementById('studentListTable'));
-    showStudentData(filteredArray);
+    clearTotalCount();
+    filteredArray.forEach((student) => countStudentByHouse(student));
+    showStudentData(true, filteredArray);
+}
+function clearTotalCount() {
+    stats = {
+        total: 0,
+        expelled: 0,
+        house: {
+            griffindor: 0,
+            ravenclaw: 0,
+            slytherin: 0,
+            hufflepuff: 0,
+        }
+    };
+}
+function randomizeBloodStatus(student) {
+    if(student.blood === 'Half-blood') {
+        student.blood = 'Pure-blood';
+        return student;
+    } else {
+        const randomNumber = Math.round(Math.random() * 100);
+
+        if(randomNumber < 40) {
+            student.blood = 'Pure-blood'
+        } else {
+            student.blood = 'Half-blood'
+        }
+
+        return student;
+    }
+}
+function insertMe() {
+    const karolina = {
+        blood: "Pure-blood",
+        fullname: {
+            firstName: "Karolina",
+            lastName: "Valentova",
+            middleName: " ",
+        },
+        gender: "girl",
+        house: "Slytherin",
+        isExpeled: false,
+        isInquisitorialActive: false,
+        isPrefectActive: false,
+        picture: "./student_pictures/brown_l.png",
+
+    };
+
+    const studentListElement = document.getElementById('studentListTable');
+    const studentListEntryTemplate = document.getElementById('studentEntry');
+    let temporaryStudentEntryTemplate = studentListEntryTemplate.content.cloneNode(true);
+    const newStudentListEntry = buildStudentEntry(temporaryStudentEntryTemplate, karolina);
+
+    studentListElement.appendChild(newStudentListEntry);
 }
 
-//     houseBanner.src = houseBannerSource;
-//     picture.src = studentDataElement.children[2].src;
-//     modal.children[0].style.border = modalColor;
-//     modal.style.display = 'block';
-// }
+

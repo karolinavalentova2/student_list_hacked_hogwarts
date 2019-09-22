@@ -1,7 +1,7 @@
 'use strict';
 let HACKING_MODE = false;
-if(window.location.href.includes('doHackMe')) {
-    console.log('HACKING MODE IS ON!')
+if(window.location.href.includes('doHackMe')) {  // source: https://www.w3schools.com/js/js_window_location.asp?hacking=true
+    console.log('HACKING MODE IS ON!');
     HACKING_MODE = true;
 }
 
@@ -41,6 +41,14 @@ function doSetup(){
     document.getElementById('modalClose').onclick = () => {
         document.getElementById('modal').style.display = 'none';
     };
+
+    let filterByStatusButtons = document.getElementsByClassName('filterButtonByStatus');
+
+    for(let i = 0; i<filterByStatusButtons.length;i++) {
+        filterByStatusButtons[i].onclick = () => {
+            filterFlag(filterByStatusButtons[i].textContent);
+        }
+    }
 
     // Function do collapsible in main menu
     let coll = document.getElementsByClassName("collapsible");
@@ -168,7 +176,7 @@ function setBlood(student) {
     let isHalfBlooded = false;
     let isPureBlooded = false;
 
-   storage.studentFamily['half'].forEach((currentLastName) => {
+    storage.studentFamily['half'].forEach((currentLastName) => {
         if(student.fullname.lastName.includes(currentLastName)) isHalfBlooded = true;
     });
 
@@ -274,7 +282,7 @@ function buildStudentEntry(element, studentData) {
 
 
     element.firstElementChild.cells[7].firstChild.onclick = () => {
-      showModal(studentData);
+        showModal(studentData);
     };
 
 
@@ -336,10 +344,15 @@ function showModal(studentData) {
 
     expelButton.textContent = studentData.isExpeled ? 'Active' : 'Inactive';
 
-    expelButton.onclick = () => {
-        changeStudentFlags(expelButton, studentData);
-    };
-
+    if(studentData.isExpeled === false) {
+        expelButton.onclick = () => {
+            changeStudentFlags(expelButton, studentData);
+        };
+    } else {
+        expelButton.onclick = () => {
+            alert('Students cannot be added back once they are expelled!')
+        };
+    }
 
     document.getElementById('modal').style.display = 'block';
 }
@@ -465,7 +478,7 @@ function setButtonActions(){
 function sortBy(typeOfSorting) {
     switch(typeOfSorting) {
         case 'First name': {
-            // Sort by first name; source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+            // Followed by MDN example; source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
             let sortedArray = storage.studentData.sort((a,b) => {
                 if (a.fullname.firstName < b.fullname.firstName) return -1;
                 if (a.fullname.firstName > b.fullname.firstName) return 1;
@@ -520,21 +533,46 @@ function showElementById(element) {
 }
 function filterBy(houseName) {
     if(houseName === 'Show all') {
-        showStudentData(true, storage.studentData);
-
         clearTotalCount();
         storage.studentData.forEach((student) => countStudentByHouse(student));
-        return;
+        showStudentData(true, storage.studentData);
+    } else {
+        let filteredArray = storage.studentData.filter(student => {
+            return student['house'] === houseName;
+        });
+
+        clearTotalCount();
+        filteredArray.forEach((student) => countStudentByHouse(student));
+        showStudentData(true, filteredArray);
     }
-    let filteredArray;
+}
+function filterFlag(flag) {
 
-    filteredArray = storage.studentData.filter(student => {
-        return student['house'] === houseName;
-    });
+    switch(flag){
+        case 'Show prefects': {
+            let prefectsStudentsArray = storage.studentData.filter((student) => {
+                return student.isPrefectActive === true;
+            });
 
-    clearTotalCount();
-    filteredArray.forEach((student) => countStudentByHouse(student));
-    showStudentData(true, filteredArray);
+            clearTotalCount();
+            prefectsStudentsArray.forEach((student) => countStudentByHouse(student));
+            showStudentData(true, prefectsStudentsArray);
+            break;
+        }
+        case 'Expelled students': {
+            let expelledStudentsArray = storage.studentData.filter((student) => {
+                return student.isExpeled === true;
+            });
+
+            clearTotalCount();
+            expelledStudentsArray.forEach((student) => countStudentByHouse(student));
+            showStudentData(true, expelledStudentsArray);
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 }
 function clearTotalCount() {
     stats = {
